@@ -11,6 +11,12 @@ kubectl create clusterrolebinding default-view --clusterrole=view --serviceaccou
 #
 kubectl create clusterrolebinding default-admin --clusterrole=cluster-admin --serviceaccount=client-go:default
 
+## vscode remote install
+curl -fsSL https://code-server.dev/install.sh | sh
+
+# Note: Set password
+cat .config/code-server/config.yaml 
+
 
 */
 
