@@ -11,6 +11,7 @@ help: ## Display this help.
 tools: ## All software: KinD, Kubectl
 	@./.scripts/install-kind.sh  
 	@./.scripts/install-kubectl.sh
+	@./.scripts/install-kubectx.sh
 
 
 ##@ All targets.
