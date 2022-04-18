@@ -16,3 +16,5 @@ docker build --no-cache -t clientgo:v0.0.1 -f Dockerfile .
 kind load --name=metal docker-image clientgo:v0.0.1
 kubectl create deployment --image=clientgo:v0.0.1 clientgo
 ```
+
+
