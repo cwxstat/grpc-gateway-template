@@ -1,5 +1,8 @@
 /*
 
+ref: https://github.com/kubernetes/client-go/tree/master/examples
+
+
 k create ns client-go
 kubens client-go
 kubectl create clusterrolebinding default-view --clusterrole=view --serviceaccount=client-go:default
