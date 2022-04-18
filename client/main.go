@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	addr = flag.String("addr", "0.0.0.0:11000", "the address to connect to")
+	addr = flag.String("addr", "0.0.0.0:10000", "the address to connect to")
 	name = flag.String("name", defaultName, "Name to greet")
 )
 
