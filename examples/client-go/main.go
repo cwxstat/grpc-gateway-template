@@ -26,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	v1 "k8s.io/kubernetes/pkg/api/v1"
 	//
 	// Uncomment to load all auth plugins
 	// _ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -48,6 +49,20 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	nsName := &v1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "my-new-namespace",
+		},
+	}
+
+	ns, err := clientset.CoreV1().Namespaces().Create(context.Background(), nsName, metav1.CreateOptions{})
+	if err != nil {
+		fmt.Printf("namespace create error: %s %v\n",err,ns)
+	}
+	
+
+
 	for {
 		// get pods in all the namespaces by omitting namespace
 		// Or specify namespace to get pods in particular namespace
