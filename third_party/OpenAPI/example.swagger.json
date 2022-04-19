@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "UserService"
+      "name": "NamespaceService"
     }
   ],
   "schemes": [
@@ -19,11 +19,11 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/users": {
+    "/api/v1/namespaces": {
       "get": {
-        "summary": "List users",
-        "description": "List all users on the server.",
-        "operationId": "UserService_ListUsers",
+        "summary": "List namespaces",
+        "description": "List all namespaces in clusters",
+        "operationId": "NamespaceService_ListNamespaces",
         "responses": {
           "200": {
             "description": "A successful response.(streaming responses)",
@@ -31,13 +31,13 @@
               "type": "object",
               "properties": {
                 "result": {
-                  "$ref": "#/definitions/exampleUser"
+                  "$ref": "#/definitions/exampleNamespace"
                 },
                 "error": {
                   "$ref": "#/definitions/rpcStatus"
                 }
               },
-              "title": "Stream result of exampleUser"
+              "title": "Stream result of exampleNamespace"
             }
           },
           "default": {
@@ -48,18 +48,18 @@
           }
         },
         "tags": [
-          "Users"
+          "Namespaces"
         ]
       },
       "post": {
-        "summary": "Add a user",
-        "description": "Add a user to the server.",
-        "operationId": "UserService_AddUser",
+        "summary": "Create a namespace",
+        "description": "Create a namespace on the cluster.",
+        "operationId": "NamespaceService_CreateNamespace",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/exampleUser"
+              "$ref": "#/definitions/exampleNamespace"
             }
           },
           "default": {
@@ -75,25 +75,25 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/exampleAddUserRequest"
+              "$ref": "#/definitions/exampleCreateNamespaceRequest"
             }
           }
         ],
         "tags": [
-          "Users"
+          "Namespaces"
         ]
       }
     },
-    "/api/v1/users/{id}": {
+    "/api/v1/namespaces/{name}": {
       "get": {
-        "summary": "Get a user by their ID",
-        "description": "Gets a user from the server.",
-        "operationId": "UserService_GetUser",
+        "summary": "Get a namespace by its name",
+        "description": "Gets a namespace from the cluster.",
+        "operationId": "NamespaceService_GetNamespace",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/exampleUser"
+              "$ref": "#/definitions/exampleNamespace"
             }
           },
           "default": {
@@ -105,23 +105,53 @@
         },
         "parameters": [
           {
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true,
             "type": "string"
           }
         ],
         "tags": [
-          "Users"
+          "Namespaces"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a namespace by its name",
+        "description": "Deletes a namespace from the cluster.",
+        "operationId": "NamespaceService_DeleteNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/exampleNamespace"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Namespaces"
         ]
       }
     }
   },
   "definitions": {
-    "exampleAddUserRequest": {
+    "exampleCreateNamespaceRequest": {
       "type": "object",
       "properties": {
-        "email": {
+        "namespace": {
           "type": "string"
         },
         "metadata": {
@@ -129,13 +159,10 @@
         }
       }
     },
-    "exampleUser": {
+    "exampleNamespace": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "email": {
+        "name": {
           "type": "string"
         },
         "createTime": {

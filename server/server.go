@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync"
 
-	"github.com/gofrs/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -14,54 +13,73 @@ import (
 
 // Backend implements the protobuf interface
 type Backend struct {
-	mu    *sync.RWMutex
-	users []*pbExample.User
+	mu         *sync.RWMutex
+	namespaces map[string]*pbExample.Namespace
 }
 
 // New initializes a new Backend struct.
 func New() *Backend {
+
+	// Grab current
+
 	return &Backend{
-		mu: &sync.RWMutex{},
+		namespaces: map[string]*pbExample.Namespace{},
+		mu:         &sync.RWMutex{},
 	}
 }
 
-// AddUser adds a user to the in-memory store.
-func (b *Backend) AddUser(ctx context.Context, req *pbExample.AddUserRequest) (*pbExample.User, error) {
+// AddUser adds a namespace to the in-memory hash.
+func (b *Backend) CreateNamespace(ctx context.Context, req *pbExample.CreateNamespaceRequest) (*pbExample.Namespace, error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	user := &pbExample.User{
-		Id:         uuid.Must(uuid.NewV4()).String(),
-		Email:      req.GetEmail(),
+	if value, ok := b.namespaces[req.GetNamespace()]; ok {
+		return value, status.Errorf(codes.AlreadyExists, "namespace with name %q already exists", req.GetNamespace())
+
+	}
+
+	namespace := &pbExample.Namespace{
+		Name:       req.GetNamespace(),
 		CreateTime: timestamppb.Now(),
 		Metadata:   req.GetMetadata(),
 	}
-	b.users = append(b.users, user)
+	b.namespaces[req.GetNamespace()] = namespace
 
-	return user, nil
+	return namespace, nil
 }
 
-// GetUser gets a user from the store.
-func (b *Backend) GetUser(ctx context.Context, req *pbExample.GetUserRequest) (*pbExample.User, error) {
+// GetNamespace gets a namespace from the cluster.
+func (b *Backend) GetNamespace(ctx context.Context, req *pbExample.GetNamespaceRequest) (*pbExample.Namespace, error) {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 
-	for _, user := range b.users {
-		if user.Id == req.GetId() {
-			return user, nil
-		}
+	if value, ok := b.namespaces[req.GetName()]; ok {
+		return value, nil
 	}
 
-	return nil, status.Errorf(codes.NotFound, "user with ID %q could not be found", req.GetId())
+	return nil, status.Errorf(codes.NotFound, "namespace with name %q could not be found", req.GetName())
 }
 
-// ListUsers lists all users in the store.
-func (b *Backend) ListUsers(_ *pbExample.ListUsersRequest, srv pbExample.UserService_ListUsersServer) error {
+// DeleteNamespace deletes a namespace from the cluster.
+func (b *Backend) DeleteNamespace(ctx context.Context, req *pbExample.GetNamespaceRequest) (*pbExample.Namespace, error) {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 
-	for _, user := range b.users {
-		err := srv.Send(user)
+	if value, ok := b.namespaces[req.GetName()]; ok {
+		delete(b.namespaces, req.GetName())
+		return value, nil
+	}
+
+	return nil, status.Errorf(codes.NotFound, "namespace with name %q could not be found", req.GetName())
+}
+
+// ListNamespaces lists all namespaces in the cluster.
+func (b *Backend) ListNamespaces(_ *pbExample.ListNamespaceRequest, srv pbExample.NamespaceService_ListNamespacesServer) error {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+
+	for _, namespace := range b.namespaces {
+		err := srv.Send(namespace)
 		if err != nil {
 			return err
 		}

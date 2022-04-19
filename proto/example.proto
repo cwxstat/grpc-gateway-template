@@ -23,57 +23,67 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   schemes: HTTPS;
 };
 
-service UserService {
-  rpc AddUser(AddUserRequest) returns (User) {
+service NamespaceService {
+  rpc CreateNamespace(CreateNamespaceRequest) returns (Namespace) {
     option (google.api.http) = {
-      // Route to this method from POST requests to /api/v1/users
-      post: "/api/v1/users"
+      // Route to this method from POST requests to /api/v1/namespaces
+      post: "/api/v1/namespaces"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Add a user"
-      description: "Add a user to the server."
-      tags: "Users"
+      summary: "Create a namespace"
+      description: "Create a namespace on the cluster."
+      tags: "Namespaces"
     };
   }
-  rpc GetUser(GetUserRequest) returns (User) {
+  rpc GetNamespace(GetNamespaceRequest) returns (Namespace) {
     option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/users/{id}
-      get: "/api/v1/users/{id}"
+      // Route to this method from GET requests to /api/v1/namespaces/{name}
+      get: "/api/v1/namespaces/{name}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Get a user by their ID"
-      description: "Gets a user from the server."
-      tags: "Users"
+      summary: "Get a namespace by its name"
+      description: "Gets a namespace from the cluster."
+      tags: "Namespaces"
     };
   }
-  rpc ListUsers(ListUsersRequest) returns (stream User) {
+  rpc DeleteNamespace(GetNamespaceRequest) returns (Namespace) {
     option (google.api.http) = {
-      // Route to this method from GET requests to /api/v1/users
-      get: "/api/v1/users"
+      // Route to this method from DELETE requests to /api/v1/namespaces/{name}
+      delete: "/api/v1/namespaces/{name}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "List users"
-      description: "List all users on the server."
-      tags: "Users"
+      summary: "Delete a namespace by its name"
+      description: "Deletes a namespace from the cluster."
+      tags: "Namespaces"
+    };
+  }
+  rpc ListNamespaces(ListNamespaceRequest) returns (stream Namespace) {
+    option (google.api.http) = {
+      // Route to this method from GET requests to /api/v1/namespaces
+      get: "/api/v1/namespaces"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List namespaces"
+      description: "List all namespaces in clusters"
+      tags: "Namespaces"
     };
   }
 }
 
-message AddUserRequest {
-  string email = 1;
+message CreateNamespaceRequest {
+  string namespace = 1;
   google.protobuf.Struct metadata = 2;
 }
 
-message GetUserRequest {
-  string id = 1;
+message GetNamespaceRequest {
+  string name = 1;
 }
 
-message ListUsersRequest {}
+message ListNamespaceRequest {}
 
-message User {
-  string id = 1;
-  string email = 2;
-  google.protobuf.Timestamp create_time = 3;
-  google.protobuf.Struct metadata = 4;
+message Namespace {
+  string name = 1;
+  google.protobuf.Timestamp create_time = 2;
+  google.protobuf.Struct metadata = 3;
 }

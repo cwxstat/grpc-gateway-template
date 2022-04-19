@@ -14,47 +14,57 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// UserServiceClient is the client API for UserService service.
+// NamespaceServiceClient is the client API for NamespaceService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type UserServiceClient interface {
-	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*User, error)
-	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
-	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (UserService_ListUsersClient, error)
+type NamespaceServiceClient interface {
+	CreateNamespace(ctx context.Context, in *CreateNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
+	GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
+	DeleteNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
+	ListNamespaces(ctx context.Context, in *ListNamespaceRequest, opts ...grpc.CallOption) (NamespaceService_ListNamespacesClient, error)
 }
 
-type userServiceClient struct {
+type namespaceServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
-	return &userServiceClient{cc}
+func NewNamespaceServiceClient(cc grpc.ClientConnInterface) NamespaceServiceClient {
+	return &namespaceServiceClient{cc}
 }
 
-func (c *userServiceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
-	err := c.cc.Invoke(ctx, "/example.UserService/AddUser", in, out, opts...)
+func (c *namespaceServiceClient) CreateNamespace(ctx context.Context, in *CreateNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error) {
+	out := new(Namespace)
+	err := c.cc.Invoke(ctx, "/example.NamespaceService/CreateNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
-	err := c.cc.Invoke(ctx, "/example.UserService/GetUser", in, out, opts...)
+func (c *namespaceServiceClient) GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error) {
+	out := new(Namespace)
+	err := c.cc.Invoke(ctx, "/example.NamespaceService/GetNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (UserService_ListUsersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[0], "/example.UserService/ListUsers", opts...)
+func (c *namespaceServiceClient) DeleteNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error) {
+	out := new(Namespace)
+	err := c.cc.Invoke(ctx, "/example.NamespaceService/DeleteNamespace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &userServiceListUsersClient{stream}
+	return out, nil
+}
+
+func (c *namespaceServiceClient) ListNamespaces(ctx context.Context, in *ListNamespaceRequest, opts ...grpc.CallOption) (NamespaceService_ListNamespacesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &NamespaceService_ServiceDesc.Streams[0], "/example.NamespaceService/ListNamespaces", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &namespaceServiceListNamespacesClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -64,134 +74,160 @@ func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest,
 	return x, nil
 }
 
-type UserService_ListUsersClient interface {
-	Recv() (*User, error)
+type NamespaceService_ListNamespacesClient interface {
+	Recv() (*Namespace, error)
 	grpc.ClientStream
 }
 
-type userServiceListUsersClient struct {
+type namespaceServiceListNamespacesClient struct {
 	grpc.ClientStream
 }
 
-func (x *userServiceListUsersClient) Recv() (*User, error) {
-	m := new(User)
+func (x *namespaceServiceListNamespacesClient) Recv() (*Namespace, error) {
+	m := new(Namespace)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-// UserServiceServer is the server API for UserService service.
-// All implementations should embed UnimplementedUserServiceServer
+// NamespaceServiceServer is the server API for NamespaceService service.
+// All implementations should embed UnimplementedNamespaceServiceServer
 // for forward compatibility
-type UserServiceServer interface {
-	AddUser(context.Context, *AddUserRequest) (*User, error)
-	GetUser(context.Context, *GetUserRequest) (*User, error)
-	ListUsers(*ListUsersRequest, UserService_ListUsersServer) error
+type NamespaceServiceServer interface {
+	CreateNamespace(context.Context, *CreateNamespaceRequest) (*Namespace, error)
+	GetNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error)
+	DeleteNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error)
+	ListNamespaces(*ListNamespaceRequest, NamespaceService_ListNamespacesServer) error
 }
 
-// UnimplementedUserServiceServer should be embedded to have forward compatible implementations.
-type UnimplementedUserServiceServer struct {
+// UnimplementedNamespaceServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedNamespaceServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) AddUser(context.Context, *AddUserRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+func (UnimplementedNamespaceServiceServer) CreateNamespace(context.Context, *CreateNamespaceRequest) (*Namespace, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNamespace not implemented")
 }
-func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+func (UnimplementedNamespaceServiceServer) GetNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNamespace not implemented")
 }
-func (UnimplementedUserServiceServer) ListUsers(*ListUsersRequest, UserService_ListUsersServer) error {
-	return status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
+func (UnimplementedNamespaceServiceServer) DeleteNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteNamespace not implemented")
+}
+func (UnimplementedNamespaceServiceServer) ListNamespaces(*ListNamespaceRequest, NamespaceService_ListNamespacesServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListNamespaces not implemented")
 }
 
-// UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to UserServiceServer will
+// UnsafeNamespaceServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NamespaceServiceServer will
 // result in compilation errors.
-type UnsafeUserServiceServer interface {
-	mustEmbedUnimplementedUserServiceServer()
+type UnsafeNamespaceServiceServer interface {
+	mustEmbedUnimplementedNamespaceServiceServer()
 }
 
-func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
-	s.RegisterService(&UserService_ServiceDesc, srv)
+func RegisterNamespaceServiceServer(s grpc.ServiceRegistrar, srv NamespaceServiceServer) {
+	s.RegisterService(&NamespaceService_ServiceDesc, srv)
 }
 
-func _UserService_AddUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddUserRequest)
+func _NamespaceService_CreateNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNamespaceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).AddUser(ctx, in)
+		return srv.(NamespaceServiceServer).CreateNamespace(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/example.UserService/AddUser",
+		FullMethod: "/example.NamespaceService/CreateNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).AddUser(ctx, req.(*AddUserRequest))
+		return srv.(NamespaceServiceServer).CreateNamespace(ctx, req.(*CreateNamespaceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserRequest)
+func _NamespaceService_GetNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNamespaceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).GetUser(ctx, in)
+		return srv.(NamespaceServiceServer).GetNamespace(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/example.UserService/GetUser",
+		FullMethod: "/example.NamespaceService/GetNamespace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUser(ctx, req.(*GetUserRequest))
+		return srv.(NamespaceServiceServer).GetNamespace(ctx, req.(*GetNamespaceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_ListUsers_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ListUsersRequest)
+func _NamespaceService_DeleteNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NamespaceServiceServer).DeleteNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/example.NamespaceService/DeleteNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NamespaceServiceServer).DeleteNamespace(ctx, req.(*GetNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NamespaceService_ListNamespaces_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListNamespaceRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(UserServiceServer).ListUsers(m, &userServiceListUsersServer{stream})
+	return srv.(NamespaceServiceServer).ListNamespaces(m, &namespaceServiceListNamespacesServer{stream})
 }
 
-type UserService_ListUsersServer interface {
-	Send(*User) error
+type NamespaceService_ListNamespacesServer interface {
+	Send(*Namespace) error
 	grpc.ServerStream
 }
 
-type userServiceListUsersServer struct {
+type namespaceServiceListNamespacesServer struct {
 	grpc.ServerStream
 }
 
-func (x *userServiceListUsersServer) Send(m *User) error {
+func (x *namespaceServiceListNamespacesServer) Send(m *Namespace) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-// UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
+// NamespaceService_ServiceDesc is the grpc.ServiceDesc for NamespaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var UserService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "example.UserService",
-	HandlerType: (*UserServiceServer)(nil),
+var NamespaceService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "example.NamespaceService",
+	HandlerType: (*NamespaceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddUser",
-			Handler:    _UserService_AddUser_Handler,
+			MethodName: "CreateNamespace",
+			Handler:    _NamespaceService_CreateNamespace_Handler,
 		},
 		{
-			MethodName: "GetUser",
-			Handler:    _UserService_GetUser_Handler,
+			MethodName: "GetNamespace",
+			Handler:    _NamespaceService_GetNamespace_Handler,
+		},
+		{
+			MethodName: "DeleteNamespace",
+			Handler:    _NamespaceService_DeleteNamespace_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ListUsers",
-			Handler:       _UserService_ListUsers_Handler,
+			StreamName:    "ListNamespaces",
+			Handler:       _NamespaceService_ListNamespaces_Handler,
 			ServerStreams: true,
 		},
 	},

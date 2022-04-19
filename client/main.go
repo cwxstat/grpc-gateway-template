@@ -1,7 +1,6 @@
 package main
 
 import (
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
@@ -12,7 +11,6 @@ import (
 	"flag"
 	"log"
 	"time"
-
 )
 
 const (
@@ -21,12 +19,11 @@ const (
 
 var (
 	addr = flag.String("addr", "0.0.0.0:10000", "the address to connect to")
-	name = flag.String("name", defaultName, "Name to greet")
 )
 
 func getCert() (credentials.TransportCredentials, error) {
-	creds, err := credentials.NewClientTLSFromFile("./certs/proto-certs.pem", 
-	"localhost")
+	creds, err := credentials.NewClientTLSFromFile("./certs/proto-certs.pem",
+		"localhost")
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +33,6 @@ func getCert() (credentials.TransportCredentials, error) {
 func main() {
 	flag.Parse()
 	// Set up a connection to the server.
-
 
 	creds, err := getCert()
 	if err != nil {
@@ -48,21 +44,16 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pbExample.NewUserServiceClient(conn)
+	c := pbExample.NewNamespaceServiceClient(conn)
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-    
-
-
-
-	r, err := c.AddUser(ctx, &pbExample.AddUserRequest{
-		Email:    "mchirico@gmail.com",
-		Metadata: &structpb.Struct{},
+	r, err := c.CreateNamespace(ctx, &pbExample.CreateNamespaceRequest{
+		Namespace: "client-test",
+		Metadata:  &structpb.Struct{},
 	})
-
 
 	if err != nil {
 		log.Fatalf("could not addUser: %v", err)
