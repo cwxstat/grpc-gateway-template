@@ -9,6 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pbExample "github.com/cwxstat/grpc-gateway-template/proto"
+	structpb "google.golang.org/protobuf/types/known/structpb"
 )
 
 // Backend implements the protobuf interface
@@ -20,10 +21,23 @@ type Backend struct {
 // New initializes a new Backend struct.
 func New() *Backend {
 
-	// Grab current
+	namespaces := map[string]*pbExample.Namespace{}
+
+	// Grab current or defaults
+	namespaces["system"] = &pbExample.Namespace{
+		Name:       "system",
+		CreateTime: timestamppb.Now(),
+		Metadata:   &structpb.Struct{},
+	}
+
+	namespaces["default"] = &pbExample.Namespace{
+		Name:       "default",
+		CreateTime: timestamppb.Now(),
+		Metadata:   &structpb.Struct{},
+	}
 
 	return &Backend{
-		namespaces: map[string]*pbExample.Namespace{},
+		namespaces: namespaces,
 		mu:         &sync.RWMutex{},
 	}
 }
