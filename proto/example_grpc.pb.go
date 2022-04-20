@@ -22,6 +22,7 @@ type NamespaceServiceClient interface {
 	GetNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
 	DeleteNamespace(ctx context.Context, in *GetNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
 	ListNamespaces(ctx context.Context, in *ListNamespaceRequest, opts ...grpc.CallOption) (NamespaceService_ListNamespacesClient, error)
+	UpdateNamespace(ctx context.Context, in *UpdateNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error)
 }
 
 type namespaceServiceClient struct {
@@ -91,6 +92,15 @@ func (x *namespaceServiceListNamespacesClient) Recv() (*Namespace, error) {
 	return m, nil
 }
 
+func (c *namespaceServiceClient) UpdateNamespace(ctx context.Context, in *UpdateNamespaceRequest, opts ...grpc.CallOption) (*Namespace, error) {
+	out := new(Namespace)
+	err := c.cc.Invoke(ctx, "/example.NamespaceService/UpdateNamespace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NamespaceServiceServer is the server API for NamespaceService service.
 // All implementations should embed UnimplementedNamespaceServiceServer
 // for forward compatibility
@@ -99,6 +109,7 @@ type NamespaceServiceServer interface {
 	GetNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error)
 	DeleteNamespace(context.Context, *GetNamespaceRequest) (*Namespace, error)
 	ListNamespaces(*ListNamespaceRequest, NamespaceService_ListNamespacesServer) error
+	UpdateNamespace(context.Context, *UpdateNamespaceRequest) (*Namespace, error)
 }
 
 // UnimplementedNamespaceServiceServer should be embedded to have forward compatible implementations.
@@ -116,6 +127,9 @@ func (UnimplementedNamespaceServiceServer) DeleteNamespace(context.Context, *Get
 }
 func (UnimplementedNamespaceServiceServer) ListNamespaces(*ListNamespaceRequest, NamespaceService_ListNamespacesServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListNamespaces not implemented")
+}
+func (UnimplementedNamespaceServiceServer) UpdateNamespace(context.Context, *UpdateNamespaceRequest) (*Namespace, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNamespace not implemented")
 }
 
 // UnsafeNamespaceServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -204,6 +218,24 @@ func (x *namespaceServiceListNamespacesServer) Send(m *Namespace) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _NamespaceService_UpdateNamespace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNamespaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NamespaceServiceServer).UpdateNamespace(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/example.NamespaceService/UpdateNamespace",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NamespaceServiceServer).UpdateNamespace(ctx, req.(*UpdateNamespaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // NamespaceService_ServiceDesc is the grpc.ServiceDesc for NamespaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -222,6 +254,10 @@ var NamespaceService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteNamespace",
 			Handler:    _NamespaceService_DeleteNamespace_Handler,
+		},
+		{
+			MethodName: "UpdateNamespace",
+			Handler:    _NamespaceService_UpdateNamespace_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

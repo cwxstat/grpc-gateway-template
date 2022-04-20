@@ -101,3 +101,22 @@ func (b *Backend) ListNamespaces(_ *pbExample.ListNamespaceRequest, srv pbExampl
 
 	return nil
 }
+
+// UpdateNamespaces updates a namespace in the cluster.
+func (b *Backend) UpdateNamespace(ctx context.Context, req *pbExample.UpdateNamespaceRequest) (*pbExample.Namespace, error) {
+	b.mu.RLock()
+	defer b.mu.RUnlock()
+
+	if _, ok := b.namespaces[req.Namespace.Name]; ok {
+		namespace := &pbExample.Namespace{
+			Name: req.GetNamespace().Name,
+			CreateTime: req.Namespace.GetCreateTime(),
+			Metadata: req.GetNamespace().Metadata,
+		}
+		b.namespaces[req.Namespace.Name] = namespace
+		return namespace, nil
+	}
+
+	return nil, status.Errorf(codes.NotFound, "namespace with name %q could not be found", req.Namespace.Name)
+
+}

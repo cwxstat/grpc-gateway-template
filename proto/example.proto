@@ -4,6 +4,7 @@ package example;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/field_mask.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
@@ -69,6 +70,21 @@ service NamespaceService {
       tags: "Namespaces"
     };
   }
+  rpc UpdateNamespace(UpdateNamespaceRequest) returns (Namespace) {
+    option (google.api.http) = {
+      // Route to this method from PATCH requests to /api/v1/namespaces/{namespace.name}
+      patch: "/api/v1/namespaces/{namespace.name}"
+      body: "namespace"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update the namespace"
+      description: "Change properties of the namespace."
+      tags: "Namespaces"
+    };
+  }
+
+
+
 }
 
 message CreateNamespaceRequest {
@@ -80,10 +96,19 @@ message GetNamespaceRequest {
   string name = 1;
 }
 
+message UpdateNamespaceRequest {
+  Namespace namespace = 1;
+  google.protobuf.Struct metadata = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+
 message ListNamespaceRequest {}
 
 message Namespace {
+  // Name uniquely identifies a Namespace.
   string name = 1;
+  // Output only
   google.protobuf.Timestamp create_time = 2;
   google.protobuf.Struct metadata = 3;
 }

@@ -84,6 +84,53 @@
         ]
       }
     },
+    "/api/v1/namespaces/{namespace.name}": {
+      "patch": {
+        "summary": "Update the namespace",
+        "description": "Change properties of the namespace.",
+        "operationId": "NamespaceService_UpdateNamespace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/exampleNamespace"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "namespace.name",
+            "description": "Name uniquely identifies a Namespace.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/exampleNamespace"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Namespaces"
+        ]
+      }
+    },
     "/api/v1/namespaces/{name}": {
       "get": {
         "summary": "Get a namespace by its name",
@@ -163,11 +210,13 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Name uniquely identifies a Namespace."
         },
         "createTime": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "title": "Output only"
         },
         "metadata": {
           "type": "object"
