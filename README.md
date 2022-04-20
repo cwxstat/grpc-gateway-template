@@ -16,6 +16,26 @@ make
 go run main.go
 ```
 
+After running the above, you should see the following:
+
+```code
+INFO: 2022/04/20 18:18:47 Serving gRPC on https://0.0.0.0:10000
+INFO: 2022/04/20 18:18:47 [core] parsed scheme: "dns"
+INFO: 2022/04/20 18:18:47 [core] ccResolverWrapper: sending update to cc: {[{0.0.0.0:10000  <nil> 0 <nil>}] <nil> <nil>}
+INFO: 2022/04/20 18:18:47 [core] ClientConn switching balancer to "pick_first"
+INFO: 2022/04/20 18:18:47 [core] Channel switches to new LB policy "pick_first"
+INFO: 2022/04/20 18:18:47 [core] Subchannel Connectivity change to CONNECTING
+INFO: 2022/04/20 18:18:47 [core] Subchannel picks a new address "0.0.0.0:10000" to connect
+INFO: 2022/04/20 18:18:47 [core] Channel Connectivity change to CONNECTING
+INFO: 2022/04/20 18:18:47 [core] Subchannel Connectivity change to READY
+INFO: 2022/04/20 18:18:47 [core] Channel Connectivity change to READY
+INFO: 2022/04/20 18:18:47 Serving gRPC-Gateway and OpenAPI Documentation on https://0.0.0.0:11000
+
+```
+
+You can attach to the http interface `https://0.0.0.0:11000`
+
+<img width="885" alt="image" src="https://user-images.githubusercontent.com/755710/164297030-c4757a15-474e-4875-9c4f-fd0c94901a7d.png">
 
 
 
