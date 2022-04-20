@@ -5,7 +5,7 @@
 
 Steps to run the Namespace demo
 
-```code
+```bash
 # check out namespace_basic_no_connect branch
 git co namespace_basic_no_connect
 
@@ -18,7 +18,7 @@ go run main.go
 
 After running the above, you should see the following:
 
-```code
+```bash
 INFO: 2022/04/20 18:18:47 Serving gRPC on https://0.0.0.0:10000
 INFO: 2022/04/20 18:18:47 [core] parsed scheme: "dns"
 INFO: 2022/04/20 18:18:47 [core] ccResolverWrapper: sending update to cc: {[{0.0.0.0:10000  <nil> 0 <nil>}] <nil> <nil>}
@@ -33,13 +33,22 @@ INFO: 2022/04/20 18:18:47 Serving gRPC-Gateway and OpenAPI Documentation on http
 
 ```
 
+
+
 You can attach to the http interface `https://0.0.0.0:11000`
 
 <img width="885" alt="image" src="https://user-images.githubusercontent.com/755710/164297030-c4757a15-474e-4875-9c4f-fd0c94901a7d.png">
 
 
 
+### gRPC run on 10000
 
+```bash
+# Need to be in client directory to pick up certs
+cd client
+go run main.go 
+2022/04/20 18:24:21 Create time: seconds:1650479061 nanos:70050683
+```
 
 
 
