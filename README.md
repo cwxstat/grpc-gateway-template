@@ -1,5 +1,30 @@
 # grpc-gateway-template
 
+
+# Namespace demo
+
+Steps to run the Namespace demo
+
+```code
+# check out namespace_basic_no_connect branch
+git co namespace_basic_no_connect
+
+# Next. This will generate protobuf files
+make
+
+# Run code
+go run main.go
+```
+
+
+
+
+
+
+
+
+
+
 # Loading Cluster
 
 ## Step 1:
